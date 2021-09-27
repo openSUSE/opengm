@@ -42,3 +42,6 @@ class Opengm(Client, Message):
         return user_id in self.admins[chat_id]
 
 
+@Opengm.on_message(filters.command("test"))
+async def test(cl: Client, msg: Message):
+    await msg.reply("Test!")
