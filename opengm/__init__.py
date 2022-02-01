@@ -13,5 +13,6 @@ pool = BlockingConnectionPool(
     port=REDIS_PORT,
     password=REDIS_PWD)
 DATABASE_URL = config["postgres"]["database_url"]
+LOG_LEVEL = config["logging"]["log_level"]
 pool = BlockingConnectionPool(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PWD)
 redis = Redis(connection_pool=pool)
