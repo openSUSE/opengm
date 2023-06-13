@@ -1,11 +1,11 @@
 from functools import partial
 from typing import Any, List, Tuple
 
-from pyrogram import Client, __version__, filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from functools import partial
-from opengm.plugins.sql import get_objects, create
+from opengm.plugins.sql import create, get_objects
+
 command = partial(filters.command, prefixes="/")
 
 
@@ -15,6 +15,7 @@ class Opengm(Client, Message):
     BASE = None
     SESSION = None
     engine = None
+
     def __init__(self) -> None:
         name = self.__class__.__name__.lower()
         print(name)
@@ -31,6 +32,7 @@ class Opengm(Client, Message):
         BASE, SESSION, engine = get_objects()
         await create(engine)
         from opengm.plugins.sql.users import ensure_bot_in_db
+
         me = await self.get_me()
         await ensure_bot_in_db(me.id, me.username)
 

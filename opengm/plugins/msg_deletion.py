@@ -9,11 +9,13 @@ from opengm.utils.chat_status import can_delete, user_admin
 from opengm.utils.commands import get_args
 from opengm.utils.plugins import register_plugin
 
-HELP = """
-- /purge [x]: Reply to a message to delete all messages sent after it. Takes an optional argument x to specify the number of messages to delete.
-- /p [x]: Same as /purge
-- /del: Similar to /purge but only deletes one message.
-"""
+HELP = (
+    "- /purge [x]: Reply to a message to delete all messages sent after it."
+    + "Takes an optional argument x to specify the number of messages to delete."
+    "- /p [x]: Same as /purge \n"
+    "- /del: Similar to /purge but only deletes one message. \n"
+)
+
 register_plugin("Message deletion", HELP)
 
 
@@ -36,7 +38,9 @@ async def purge(bot: Client, msg: Message):
     args = get_args(msg)
     msg_src = msg.reply_to_message
     if not msg_src:
-        await msg.reply_text("Reply to a message to select where to start purging from.")
+        await msg.reply_text(
+            "Reply to a message to select where to start purging from."
+        )
         return
     if await can_delete(msg.chat, bot):
         message_id = msg.reply_to_message.message_id
@@ -55,7 +59,8 @@ async def purge(bot: Client, msg: Message):
         count = 0
         error = False
         for m_id in range(
-                delete_to, message_id - 1, -1):  # Reverse iteration over message ids
+            delete_to, message_id - 1, -1
+        ):  # Reverse iteration over message ids
             msgs.append(m_id)
             count = count + 1
             if len(msgs) == 100:
@@ -64,7 +69,12 @@ async def purge(bot: Client, msg: Message):
                     msgs = []
                 except MessageDeleteForbidden:
                     error = True
-                    await bot.send_message(msg.chat.id, "Cannot delete all messages. The messages may be too old, I might not have delete rights, or this might not be a supergroup.")
+                    await bot.send_message(
+                        msg.chat.id,
+                        "Cannot delete all messages. The messages may be too old,"
+                        + "I might not have delete rights, or"
+                        + "this might not be a supergroup.",
+                    )
 
         if msgs:
             try:
@@ -72,9 +82,20 @@ async def purge(bot: Client, msg: Message):
                 await bot.delete_messages(msg.chat.id, msg.message_id)
             except MessageDeleteForbidden:
                 error = True
-                await bot.send_message(msg.chat.id, "Cannot delete all messages. The messages may be too old, I might not have delete rights, or this might not be a supergroup.")
+                await bot.send_message(
+                    msg.chat.id,
+                    "Cannot delete all messages."
+                    + "The messages may be too old,"
+                    + "I might not have delete rights,"
+                    + "or this might not be a supergroup.",
+                )
             if not error:
-                done = await bot.send_message(msg.chat.id, "Purge complete!\n\nPurged {} messages. **This auto-generated message shall be self destructed in 2 seconds.**".format(count))
+                done = await bot.send_message(
+                    msg.chat.id,
+                    "Purge complete!\n\nPurged {} messages."
+                    + "**This auto-generated message"
+                    + "shall be self destructed in 2 seconds.**".format(),
+                )
                 await sleep(2)
                 await done.delete()
     else:

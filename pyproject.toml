@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "opengm"
+version = "0.0.1"
+description = "Open source group manager, previously part of openSUSE defrag"
+authors = ["Onuralp SEZER <thunderbirdtr@fedoraproject.org>","Jens <karatekhd@opensuse.org>",]
+maintainers = [
+    "Jens <karatekhd@opensuse.org>",
+    "Onuralp SEZER <thunderbirdtr@fedoraproject.org>",
+]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/openSUSE/opengm"
+repository = "https://github.com/openSUSE/opengm"
+documentation = "https://github.com/openSUSE/opengm/blob/main/README.md"
+packages = [{include = "opengm"}]
+keywords = ["telegram-bot","opengm","bot","pyrogram"]
+classifiers = [
+    "Development Status :: 4 - Alpha",
+    "Environment :: X11 Applications",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.97.0"
+pyrogram = "^2.0.106"
+uvicorn = "^0.22.0"
+redis = "^4.5.5"
+sqlalchemy = "^2.0.16"
+tgcrypto = "^1.2.5"
+async-lru = "^2.0.2"
+
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.2.2"
+black = "^22.12.0"
+mypy = "^0.991"
+requests = "^2.28.2"
+ruff = "^0.0.238"
+
+[tool.bandit]
+tests = ["B201", "B301"]
+
+[tool.isort]
+line_length = 79
+profile = "black"
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+opengm = "opengm.cli:app"

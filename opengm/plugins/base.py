@@ -2,22 +2,28 @@ import logging
 import re
 
 from pyrogram import Client, filters
-from pyrogram.types import (CallbackQuery, ChatMemberUpdated,
-                            InlineKeyboardButton, InlineKeyboardMarkup,
-                            Message)
+from pyrogram.types import (
+    CallbackQuery,
+    ChatMemberUpdated,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 
 from opengm.opengm import Opengm, command
-from opengm.utils.chat_status import user_admin, admins
+from opengm.utils.chat_status import admins, user_admin
+from opengm.utils.commands import get_args
 from opengm.utils.extraction import extract_user_and_text
 from opengm.utils.plugins import HELPABLE, HELPABLE_LOWER, paginate_plugins
-from opengm.utils.commands import get_args
 
 # Do not register this plugin!
 
 LOGGER = logging.getLogger(__name__)
 HELPTEXT = """
 Hey there! My name is {}.
-I'm a modular group management bot with a few fun extras! Have a look at the following for an idea of some of the things I can help you with.
+I'm a modular group management bot with a few fun extras!
+Have a look at the following for an idea of some of the things
+I can help you with.
 
 **Main** commands avaliable:
 - /start: start the bot
@@ -40,20 +46,45 @@ async def help(cl: Client, message: Message) -> None:
     args = get_args(message)
     chat = message.chat
     if chat.type != "private":
-        await message.reply("Contact me in PM to get the list of possible commands.",
-                            reply_markup=InlineKeyboardMarkup(
-                                [
-                                    [InlineKeyboardButton(text="Help", url="t.me/{}?start=help".format((await cl.get_me()).username))]
-                                ])
-                            )
+        await message.reply(
+            "Contact me in PM to get the list of possible commands.",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Help",
+                            url="t.me/{}?start=help".format(
+                                (await cl.get_me()).username
+                            ),
+                        )
+                    ]
+                ]
+            ),
+        )
     else:
         if len(args) == 0:
-            keyboard = InlineKeyboardMarkup(inline_keyboard=await paginate_plugins(0, HELPABLE, "help"))
+            keyboard = InlineKeyboardMarkup(
+                inline_keyboard=await paginate_plugins(0, HELPABLE, "help")
+            )
             await message.reply(HELPTEXT.format("Test"), reply_markup=keyboard)
         elif args[0] in HELPABLE_LOWER:
-            text = HELPTEXT + "\n\nAnd the following:\n" + \
-                HELPABLE[HELPABLE_LOWER[args[0]]]
-            await message.reply(text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="All modules", callback_data="help_back")]]))
+            text = (
+                HELPTEXT
+                + "\n\nAnd the following:\n"
+                + HELPABLE[HELPABLE_LOWER[args[0]]]
+            )
+            await message.reply(
+                text,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="All modules", callback_data="help_back"
+                            )
+                        ]
+                    ]
+                ),
+            )
         else:
             await message.reply("There is no plugin with that name.")
 
@@ -68,16 +99,43 @@ async def help_button_callback(cl: Client, query: CallbackQuery) -> None:
     if mod_match:
         module = mod_match.group(1)
         text = HELPTEXT + "\n\nAnd the following:\n" + HELPABLE[module]
-        await query.message.reply(text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="Back", callback_data="help_back")]]))
+        await query.message.reply(
+            text,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Back", callback_data="help_back"
+                        )
+                    ]
+                ]
+            ),
+        )
     elif back_match:
-        await query.message.reply(HELPTEXT.format("Test"), reply_markup=InlineKeyboardMarkup(inline_keyboard=await paginate_plugins(0, HELPABLE, "help")))
+        await query.message.reply(
+            HELPTEXT.format("Test"),
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=await paginate_plugins(0, HELPABLE, "help")
+            ),
+        )
     elif prev_match:
         curr_page = int(prev_match.group(1))
-        await query.message.reply(HELPTEXT, reply_markup=InlineKeyboardMarkup(await paginate_plugins(curr_page - 1, HELPABLE, "help")))
+        await query.message.reply(
+            HELPTEXT,
+            reply_markup=InlineKeyboardMarkup(
+                await paginate_plugins(curr_page - 1, HELPABLE, "help")
+            ),
+        )
     elif next_match:
         next_page = int(next_match.group(1))
-        await query.message.reply(HELPTEXT, reply_markup=InlineKeyboardMarkup(await paginate_plugins(next_page + 1, HELPABLE, "help")))
+        await query.message.reply(
+            HELPTEXT,
+            reply_markup=InlineKeyboardMarkup(
+                await paginate_plugins(next_page + 1, HELPABLE, "help")
+            ),
+        )
     await query.answer()
+
 
 # Put a list of all admins in a chat to Redis
 
@@ -89,6 +147,7 @@ async def reload_admins(chat_id: int, bot: Client):
     admins[chat_id] = list
     LOGGER.debug(f"Reloaded admin list for {chat_id}")
 
+
 # Command to run reload_admins from a chat
 
 
@@ -96,7 +155,7 @@ async def reload_admins(chat_id: int, bot: Client):
 async def manually_reload_admins(bot: Client, message: Message):
     chat = message.chat
     member = await bot.get_chat_member(chat.id, message.from_user.id)
-    if member.status not in ('administrator', 'creator'):
+    if member.status not in ("administrator", "creator"):
         await message.reply_text("You need to be an admin to do this!")
         return
     await reload_admins(chat.id, bot)
@@ -114,20 +173,24 @@ async def auto_reload_admins(bot: Client, update: ChatMemberUpdated):
     else:
         alist = []
     if update.new_chat_member.status in (
-        'administrator',
-        'creator') and update.old_chat_member.status not in (
-        'administrator',
-            'creator'):
+        "administrator",
+        "creator",
+    ) and update.old_chat_member.status not in ("administrator", "creator"):
         if update.new_chat_member.user.id not in alist:
             alist.append(update.new_chat_member.user.id)
         LOGGER.info(
-            f"Added {update.new_chat_member.user.id} to the admin store in {chat.id}")
-    elif update.new_chat_member.status not in ('administrator', 'creator') and update.old_chat_member.status in ('administrator', 'creator'):
+            f"Added {update.new_chat_member.user.id} to the admin store in {chat.id}"
+        )
+    elif update.new_chat_member.status not in (
+        "administrator",
+        "creator",
+    ) and update.old_chat_member.status in ("administrator", "creator"):
         alist.remove(update.new_chat_member.user.id)
         LOGGER.debug(
-            f"Removed {update.new_chat_member.user.id} from the admin store in {chat.id}")
+            f"Removed {update.new_chat_member.user.id}"
+            + f"from the admin store in {chat.id}"
+        )
     admins[chat.id] = alist
-    pass
 
 
 @Opengm.on_message(filters.group & filters.new_chat_members)
@@ -139,7 +202,5 @@ async def bot_added_to_group(bot: Client, update: ChatMemberUpdated):
 @Opengm.on_message(command("extract"))
 @user_admin
 async def promote(bot: Client, msg: Message) -> None:
-    args = get_args(msg)
-    chat_id = msg.chat.id
-    chat = msg.chat
+    get_args(msg)
     await msg.reply_text(await extract_user_and_text(msg))

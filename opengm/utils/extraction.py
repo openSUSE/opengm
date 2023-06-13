@@ -1,10 +1,11 @@
+import logging
+
 from pyrogram.errors import BadRequest
 from pyrogram.types import Message
 
+import opengm.plugins.sql.users as sql
 from opengm.opengm import Opengm
 from opengm.utils.commands import get_args
-import opengm.plugins.sql.users as sql
-import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ async def extract_user_and_text(msg: Message):
     if entities and ent and ent.offset == len(msg.text) - len(text_to_parse):
         ent = entity_list[0]
         user_id = ent.user.id
-        text = msg.text[ent.offset + ent.length:]
+        text = msg.text[ent.offset + ent.length :]
     # Extract from written ID
     elif len(args) >= 1 and args[0].isdigit():
         user_id = int(args[0])
@@ -52,7 +53,7 @@ async def extract_user_and_text(msg: Message):
             text = res[2]
 
     # Extract from username
-    elif len(args) >= 1 and args[0][0] == '@':
+    elif len(args) >= 1 and args[0][0] == "@":
         username = args[0]
         users = await sql.get_user_id_by_name(username)
         # get text
@@ -64,7 +65,11 @@ async def extract_user_and_text(msg: Message):
         else:
             for user_obj in users:
                 try:
-                    userdat = await (await (Opengm.get_chat_member(msg.chat.id, user_obj.user_id)).user)
+                    userdat = await (
+                        await Opengm.get_chat_member(
+                            msg.chat.id, user_obj.user_id
+                        ).user
+                    )
                     if userdat.username == username:
                         user_id = userdat.userdat.id
 
