@@ -19,7 +19,7 @@ starlette = "==0.14.2"
 typing-extensions = "==3.10.0.0"
 lunr = "==0.6.0"
 urllib3 = "==1.26.6"
-yarl = "==1.6.3"
+yarl = "*"
 uvicorn = "==0.15.0"
 python-decouple = "==3.4"
 PyYAML = "==5.4.1"
@@ -32,9 +32,8 @@ beautifulsoup4 = "*"
 python-bugzilla = "*"
 aiohttp = "*"
 isort = "*"
+sqlalchemy = "*"
+asyncpg = "*"
 
 [dev-packages]
 autopep8 = "*"
-
-[requires]
-python_version = "3.8"
