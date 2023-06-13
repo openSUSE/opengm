@@ -76,4 +76,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-opengm = "opengm.cli:app"
+opengm = "opengm.main:main"

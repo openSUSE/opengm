@@ -10,9 +10,11 @@ logging.basicConfig(
     level=logging.getLevelName(LOG_LEVEL),
 )
 
-try:
-    if __name__ == "__main__":
-        Opengm().run()
 
-except KeyboardInterrupt:
-    exit()
+def main():
+    try:
+        if __name__ == "__main__":
+            Opengm().run()
+
+    except KeyboardInterrupt:
+        exit()
