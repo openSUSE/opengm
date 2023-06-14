@@ -7,7 +7,7 @@ maintainers = [
     "Jens <karatekhd@opensuse.org>",
     "Onuralp SEZER <thunderbirdtr@fedoraproject.org>",
 ]
-license = "MIT"
+license = "GPL-3.0-or-later"
 readme = "README.md"
 homepage = "https://github.com/openSUSE/opengm"
 repository = "https://github.com/openSUSE/opengm"
