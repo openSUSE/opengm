@@ -13,14 +13,14 @@ repos:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.4.0
+    rev: v3.10.1
     hooks:
     -   id: pyupgrade
         args:
         - --py3-plus
         - --keep-runtime-typing
--   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.270
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.284
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -36,7 +36,7 @@ repos:
         name: isort (pyi)
         types: [pyi]
 -   repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.7.0
     hooks:
     -   id: black
 -   repo: https://github.com/PyCQA/bandit
@@ -46,7 +46,7 @@ repos:
         args: ["-c", "pyproject.toml"]
         additional_dependencies: ["bandit[toml]"]
 -   repo: https://github.com/PyCQA/autoflake
-    rev: v2.1.1
+    rev: v2.2.0
     hooks:
     -   id: autoflake
 
