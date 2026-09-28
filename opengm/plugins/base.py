@@ -53,9 +53,7 @@ async def help(cl: Client, message: Message) -> None:
                     [
                         InlineKeyboardButton(
                             text="Help",
-                            url="t.me/{}?start=help".format(
-                                (await cl.get_me()).username
-                            ),
+                            url=f"t.me/{(await cl.get_me()).username}?start=help",
                         )
                     ]
                 ]
