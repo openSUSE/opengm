@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, List, Tuple
+from typing import Any
 
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -11,7 +11,7 @@ command = partial(filters.command, prefixes="/")
 
 class Opengm(Client, Message):
     OWNER_ID: int = 0
-    CHATS: List[int] = []
+    CHATS: list[int] = []
     BASE = None
     SESSION = None
     engine = None
@@ -36,5 +36,5 @@ class Opengm(Client, Message):
         me = await self.get_me()
         await ensure_bot_in_db(me.id, me.username)
 
-    async def stop(self, *args: Tuple[Any]) -> None:
+    async def stop(self, *args: tuple[Any]) -> None:
         await super().stop()
