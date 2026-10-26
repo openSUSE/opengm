@@ -41,7 +41,7 @@ class Chats(BASE):
         self.chat_name = chat_name
 
     def __repr__(self):
-        return "<Chat {} ({})>".format(self.chat_name, self.chat_id)
+        return f"<Chat {self.chat_name} ({self.chat_id})>"
 
 
 class ChatMembers(BASE):
@@ -67,12 +67,7 @@ class ChatMembers(BASE):
         self.user = user
 
     def __repr__(self):
-        return "<Chat user {} ({}) in chat {} ({})>".format(
-            self.user.username,
-            self.user.user_id,
-            self.chat.chat_name,
-            self.chat.chat_id,
-        )
+        return f"<Chat user {self.user.username} ({self.user.user_id}) in chat {self.chat.chat_name} ({self.chat.chat_id})>"
 
 
 async def ensure_bot_in_db(id, username):
@@ -135,8 +130,7 @@ async def update_user(user_id, username, chat_id=None, chat_name=None):
 
 async def get_user_id_by_name(username):
     try:
-        if username.startswith("@"):
-            username = username[1:]
+        username = username.removeprefix("@")
         id = (
             (
                 await SESSION.execute(
