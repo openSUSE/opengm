@@ -1,6 +1,5 @@
 import logging
 from math import ceil
-from typing import Dict, List
 
 from pyrogram.types import InlineKeyboardButton
 
@@ -20,24 +19,20 @@ def register_plugin(plugin_name: str, help_text: str = None):
 
 
 async def paginate_plugins(
-    page_n: int, module_dict: Dict, prefix, chat=None
-) -> List:
+    page_n: int, module_dict: dict, prefix, chat=None
+) -> list:
     modules = []
-    module_dict = dict(sorted(zip(module_dict.keys(), module_dict.values())))
+    module_dict = dict(sorted(module_dict.items()))
     if not chat:
         for x in module_dict:
             LOGGER.debug(module_dict[x])
             modules.append(
-                InlineKeyboardButton(
-                    x, callback_data="{}_module({})".format(prefix, x)
-                )
+                InlineKeyboardButton(x, callback_data=f"{prefix}_module({x})")
             )
     else:
         for x in module_dict:
             modules.append(
-                InlineKeyboardButton(
-                    x, callback_data="{}_module({})".format(prefix, x)
-                )
+                InlineKeyboardButton(x, callback_data=f"{prefix}_module({x})")
             )
 
     pairs = list(zip(modules[::2], modules[1::2]))
@@ -51,11 +46,11 @@ async def paginate_plugins(
             (
                 InlineKeyboardButton(
                     "<",
-                    callback_data="{}_prev({})".format(prefix, modulo_page),
+                    callback_data=f"{prefix}_prev({modulo_page})",
                 ),
                 InlineKeyboardButton(
                     ">",
-                    callback_data="{}_next({})".format(prefix, modulo_page),
+                    callback_data=f"{prefix}_next({modulo_page})",
                 ),
             )
         ]
